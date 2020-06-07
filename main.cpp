@@ -13,47 +13,46 @@ rm -rf build;mkdir build;cd build;cmake \
 */
 
 
-int main() {
-torch::Tensor tensor = torch::eye(3);
-std::cout << tensor << std::endl;
+int main() 
+{
 
-//   double  embedding[512];
-double arr1[3] = { 1.0, 1.0, 0.0 }; 
-double arr2[3] = { 0.0, 1.0, 0.0 }; 
+    auto options = torch::TensorOptions().dtype(torch::kFloat64);
 
-std::cout << "\n\nDistance Start------------------------------------------------: " << std::endl;
-auto options = torch::TensorOptions().dtype(torch::kFloat64);
-// at::Tensor arr1Tensor = torch::from_blob(arr1, {1, 3}, options); 
-// at::Tensor arr2Tensor = torch::from_blob(arr2, {1, 3}, options); 
-// std::cout << "Tensor 1: " << arr1Tensor << '\n';
-// std::cout << "Tensor 2: " << arr2Tensor << '\n';
+    std::cout << "Play Start------------------------------------------------: " << std::endl;
+    double arrAvg[4] = { 1.0, 2.0, 3.0, 4.0 }; 
+    at::Tensor arrAvgTensor = torch::from_blob(arrAvg, {1, 4}, options); 
+    std::cout << "arrAvgTensor: " << arrAvgTensor << '\n';
+
+    /*
+        ###### Based on `scipy`
+        uv = np.average(embeddings1 * embeddings2)
+        uu = np.average(np.square(embeddings1))
+        vv = np.average(np.square(embeddings2))
+        dist = 1.0 - uv / np.sqrt(uu * vv)
+
+    */
+
+    std::cout << "Mean : " << arrAvgTensor.mean() << '\n'; // 2.5
+    std::cout << "Square : " << arrAvgTensor.square() << '\n'; // [ 1  4  9 16]
+    std::cout << "Sqrt : " << arrAvgTensor.sqrt() << '\n'; // [1. 1.41421356 1.73205081 2.   ]
+    
+    std::cout << "\nPlay End------------------------------------------------: " << std::endl;
 
 
+    /////////////////////////////////////////////////////////////////////////
+    std::cout << "\n\nDistance Start------------------------------------------------: " << std::endl;
 
-double arrAvg[4] = { 1.0, 2.0, 3.0, 4.0 }; 
-at::Tensor arrAvgTensor = torch::from_blob(arrAvg, {1, 4}, options); 
-std::cout << "arrAvgTensor: " << arrAvgTensor << '\n';
+    //   double  embedding[512];
+    double arr1[3] = { 1.0, 1.0, 0.0 }; 
+    double arr2[3] = { 0.0, 1.0, 0.0 }; 
 
-// double* floatBuffer = arrAvgTensor.data_ptr<double>();
-// double summ = 0.0;
-// for( unsigned int a = 0; a < 4; a = a + 1 )
-// {
-//     summ =+ &floatBuffer[0][a];
-// }
-// std::cout << "floatBuffer : " << &floatBuffer << '\n';
+    at::Tensor arr1Tensor = torch::from_blob(arr1, {1, 3}, options); 
+    at::Tensor arr2Tensor = torch::from_blob(arr2, {1, 3}, options); 
+    std::cout << "Tensor 1: " << arr1Tensor << '\n';
+    std::cout << "Tensor 2: " << arr2Tensor << '\n';
 
-/*
-    ###### Based on `scipy`
-    uv = np.average(embeddings1 * embeddings2)
-    uu = np.average(np.square(embeddings1))
-    vv = np.average(np.square(embeddings2))
-    dist = 1.0 - uv / np.sqrt(uu * vv)
 
-*/
-
-std::cout << "Mean : " << arrAvgTensor.mean() << '\n'; // 2.5
-std::cout << "Square : " << arrAvgTensor.square() << '\n'; // [ 1  4  9 16]
-std::cout << "Sqrt : " << arrAvgTensor.sqrt() << '\n'; // [1. 1.41421356 1.73205081 2.   ]
+    std::cout << "\n\nDistance End------------------------------------------------: " << std::endl;
 
 
 
