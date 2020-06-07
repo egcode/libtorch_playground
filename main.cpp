@@ -53,6 +53,8 @@ std::cout << "arrAvgTensor: " << arrAvgTensor << '\n';
 
 std::cout << "Mean : " << arrAvgTensor.mean() << '\n'; // 2.5
 std::cout << "Square : " << arrAvgTensor.square() << '\n'; // [ 1  4  9 16]
+std::cout << "Sqrt : " << arrAvgTensor.sqrt() << '\n'; // [1. 1.41421356 1.73205081 2.   ]
+
 
 
 }
