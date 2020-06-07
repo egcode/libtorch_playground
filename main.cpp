@@ -15,6 +15,13 @@ rm -rf build;mkdir build;cd build;cmake \
 
 at::Tensor distanceCosine(at::Tensor tensor1, at::Tensor tensor2)
 {
+    /*
+        ###### Based on `scipy`
+        uv = np.average(embeddings1 * embeddings2)
+        uu = np.average(np.square(embeddings1))
+        vv = np.average(np.square(embeddings2))
+        dist = 1.0 - uv / np.sqrt(uu * vv)
+    */
     at::Tensor mult = tensor1 * tensor2;
     at::Tensor uv = mult.mean();
 
@@ -35,6 +42,8 @@ at::Tensor distanceCosine(at::Tensor tensor1, at::Tensor tensor2)
 int main() 
 {
 
+    std::cout.precision(17);
+
     auto options = torch::TensorOptions().dtype(torch::kFloat64);
 
     std::cout << "Play Start------------------------------------------------: " << std::endl;
@@ -54,28 +63,55 @@ int main()
     /////////////////////////////////////////////////////////////////////////
     std::cout << "\n\nDistance Start------------------------------------------------: " << std::endl;
 
+    /*
+    a = distance( np.array([1, 0, 0]),  np.array([0, 1, 0]))
+    print(a) #1.0
+    b = distance( np.array([100, 0, 0]),  np.array([0, 1, 0]))
+    print(b) # 1.0
+    c = distance( np.array([1, 1, 0]),  np.array([0, 1, 0]))
+    print(c) # 0.29289321881345254
+    */
+
+   /*
+   1
+   */
+    double aaarr1[3] = { 100.0, 0.0, 0.0 }; 
+    double aaarr2[3] = { 0.0, 1.0, 0.0 }; 
+    at::Tensor aaarr1Tensor = torch::from_blob(aaarr1, {1, 3}, options); 
+    at::Tensor aaarr2Tensor = torch::from_blob(aaarr2, {1, 3}, options); 
+
+    auto aadist1 = distanceCosine(aaarr1Tensor, aaarr2Tensor);
+    std::cout << "Distance1 : " << aadist1 << '\n'; // 1.0
+    
+
+   /*
+   2
+   */
+    double aarr1[3] = { 1.0, 0.0, 0.0 }; 
+    double aarr2[3] = { 0.0, 1.0, 0.0 }; 
+    at::Tensor aarr1Tensor = torch::from_blob(aarr1, {1, 3}, options); 
+    at::Tensor aarr2Tensor = torch::from_blob(aarr2, {1, 3}, options); 
+
+    auto adist1 = distanceCosine(aarr1Tensor, aarr2Tensor);
+    std::cout << "Distance2 : " << adist1 << '\n'; // 1.0
+
+
+   /*
+   3
+   */
     //   double  embedding[512];
     double arr1[3] = { 1.0, 1.0, 0.0 }; 
     double arr2[3] = { 0.0, 1.0, 0.0 }; 
-
     at::Tensor arr1Tensor = torch::from_blob(arr1, {1, 3}, options); 
     at::Tensor arr2Tensor = torch::from_blob(arr2, {1, 3}, options); 
-    std::cout << "Tensor 1: " << arr1Tensor << '\n';
-    std::cout << "Tensor 2: " << arr2Tensor << '\n';
+    // std::cout << "Tensor 1: " << arr1Tensor << '\n';
+    // std::cout << "Tensor 2: " << arr2Tensor << '\n';
 
-    /*
-        ###### Based on `scipy`
-        uv = np.average(embeddings1 * embeddings2)
-        uu = np.average(np.square(embeddings1))
-        vv = np.average(np.square(embeddings2))
-        dist = 1.0 - uv / np.sqrt(uu * vv)
-
-    */
+    auto dist1 = distanceCosine(arr1Tensor, arr2Tensor);
+    std::cout << "Distance3 : " << dist1 << '\n'; // 0.29289321881345254
 
     std::cout << "\n\nDistance End------------------------------------------------: " << std::endl;
-    
-    auto dist1 = distanceCosine(arr1Tensor, arr2Tensor);
-    std::cout << "Distance1 : " << dist1 << '\n';
+
 
 }
 
