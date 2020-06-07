@@ -13,7 +13,7 @@ rm -rf build;mkdir build;cd build;cmake \
 */
 
 
-at::Tensor distanceCosine(at::Tensor tensor1, at::Tensor tensor2)
+double distanceCosine(at::Tensor tensor1, at::Tensor tensor2)
 {
     /*
         ###### Based on `scipy`
@@ -34,8 +34,11 @@ at::Tensor distanceCosine(at::Tensor tensor1, at::Tensor tensor2)
     at::Tensor uuMultVv = uu * vv;
     at::Tensor uuvvSqrt = uuMultVv.sqrt();
 
-    at::Tensor dist = 1.0 - uv / uuvvSqrt;
+    at::Tensor distTensor = 1.0 - uv / uuvvSqrt;
 
+    // convert tensor to double
+    double* floatBuffer = distTensor.data_ptr<double>();
+    double dist = floatBuffer[0];
     return dist;
 }
 
@@ -80,9 +83,9 @@ int main()
     at::Tensor aaarr1Tensor = torch::from_blob(aaarr1, {1, 3}, options); 
     at::Tensor aaarr2Tensor = torch::from_blob(aaarr2, {1, 3}, options); 
 
-    auto aadist1 = distanceCosine(aaarr1Tensor, aaarr2Tensor);
+    double aadist1 = distanceCosine(aaarr1Tensor, aaarr2Tensor);
     std::cout << "Distance1 : " << aadist1 << '\n'; // 1.0
-    
+
 
    /*
    2
@@ -92,7 +95,7 @@ int main()
     at::Tensor aarr1Tensor = torch::from_blob(aarr1, {1, 3}, options); 
     at::Tensor aarr2Tensor = torch::from_blob(aarr2, {1, 3}, options); 
 
-    auto adist1 = distanceCosine(aarr1Tensor, aarr2Tensor);
+    double adist1 = distanceCosine(aarr1Tensor, aarr2Tensor);
     std::cout << "Distance2 : " << adist1 << '\n'; // 1.0
 
 
@@ -107,8 +110,9 @@ int main()
     // std::cout << "Tensor 1: " << arr1Tensor << '\n';
     // std::cout << "Tensor 2: " << arr2Tensor << '\n';
 
-    auto dist1 = distanceCosine(arr1Tensor, arr2Tensor);
+    double dist1 = distanceCosine(arr1Tensor, arr2Tensor);
     std::cout << "Distance3 : " << dist1 << '\n'; // 0.29289321881345254
+
 
     std::cout << "\n\nDistance End------------------------------------------------: " << std::endl;
 
