@@ -13,6 +13,25 @@ rm -rf build;mkdir build;cd build;cmake \
 */
 
 
+at::Tensor distanceCosine(at::Tensor tensor1, at::Tensor tensor2)
+{
+    at::Tensor mult = tensor1 * tensor2;
+    at::Tensor uv = mult.mean();
+
+    at::Tensor arr1TensorSquare = tensor1.square();
+    at::Tensor uu = arr1TensorSquare.mean();
+
+    at::Tensor arr2TensorSquare = tensor2.square();
+    at::Tensor vv = arr2TensorSquare.mean();
+
+    at::Tensor uuMultVv = uu * vv;
+    at::Tensor uuvvSqrt = uuMultVv.sqrt();
+
+    at::Tensor dist = 1.0 - uv / uuvvSqrt;
+
+    return dist;
+}
+
 int main() 
 {
 
@@ -54,21 +73,9 @@ int main()
     */
 
     std::cout << "\n\nDistance End------------------------------------------------: " << std::endl;
-
-    at::Tensor mult = arr1Tensor * arr2Tensor;
-    at::Tensor uv = mult.mean();
-
-    at::Tensor arr1TensorSquare = arr1Tensor.square();
-    at::Tensor uu = arr1TensorSquare.mean();
-
-    at::Tensor arr2TensorSquare = arr2Tensor.square();
-    at::Tensor vv = arr2TensorSquare.mean();
-
-    at::Tensor uuMultVv = uu * vv;
-    at::Tensor uuvvSqrt = uuMultVv.sqrt();
-
-    at::Tensor dist = 1.0 - uv / uuvvSqrt;
-
-    std::cout << "Distance : " << dist << '\n';
+    
+    auto dist1 = distanceCosine(arr1Tensor, arr2Tensor);
+    std::cout << "Distance1 : " << dist1 << '\n';
 
 }
+
